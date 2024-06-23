@@ -49,6 +49,27 @@
                     <i class="fa-solid fa-user menu-icon"></i>
                 </a>
             </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('commissions.index') }}">
+                    <span class="menu-title">Add Commission</span>
+                    <i class="fa-solid fa-percent menu-icon"></i>
+                </a>
+            </li>
         @endif
+
+        @if (auth()->check() && auth()->user()->hasRole('teacher'))
+
+     <li class="nav-item">
+                <a class="nav-link" href="{{ route('sessions.index') }}">
+                    <span class="menu-title">Add Session</span>
+                    <i class="fa-solid fa-handshake menu-icon"></i>
+                </a>
+            </li>
+
+
+
+    @endif
     </ul>
 </nav>

@@ -12,15 +12,25 @@
     <div class="navbar-menu-wrapper d-flex align-items-center">
       <ul class="navbar-nav navbar-nav-right">
 
-
+        @php
+    $profilePicture = auth()->user()->profile_picture
+        ? asset('profile_pictures/' . auth()->user()->profile_picture)
+        : 'https://via.placeholder.com/150'; // Placeholder image URL
+@endphp
 
         <li class="nav-item dropdown d-none d-xl-inline-flex user-dropdown">
           <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-            <img class="img-xs rounded-circle ms-2" src="{{ asset('assets/images/faces/face8.jpg')}}" alt="Profile image"> <span class="font-weight-normal"> {{auth()->user()->name ??  auth()->user()->first_name . ' '.auth()->user()->last_name }} </span></a>
+            <img class="img-xs rounded-circle ms-2" src="{{ $profilePicture }}" alt="Profile image"> <span class="font-weight-normal"> {{auth()->user()->name ??  auth()->user()->first_name . ' '.auth()->user()->last_name }} </span></a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
-            <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                <i class="dropdown-item-icon icon-user text-primary"></i> My Profile
-            </a>
+            @if(auth()->user()->hasRole('admin'))
+                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                        <i class="dropdown-item-icon icon-user text-primary"></i> My Profile
+                    </a>
+                @elseif(auth()->user()->hasRole('teacher'))
+                    <a class="dropdown-item" href="{{ route('teacher.profile.edit') }}">
+                        <i class="dropdown-item-icon icon-user text-primary"></i> My Profile
+                    </a>
+                @endif
 
             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="dropdown-item-icon icon-power text-primary"></i>Sign Out

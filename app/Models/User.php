@@ -8,7 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Models\Meeting;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -58,5 +58,10 @@ class User extends Authenticatable
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'course_teacher', 'teacher_id', 'course_id');
+    }
+
+    public function meetings()
+    {
+        return $this->hasMany(Meeting::class, 'teacher_id');
     }
 }

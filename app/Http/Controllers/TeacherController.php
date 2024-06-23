@@ -9,6 +9,7 @@ use App\Mail\TeacherCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class TeacherController extends Controller
 {
@@ -99,4 +100,53 @@ class TeacherController extends Controller
 
         return view('teachers.show', compact('teacher', 'courses', 'assignedCourses'));
     }
+
+
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'password' => 'nullable|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('teacher.profile.edit')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        if ($request->hasFile('profile_picture')) {
+            $profilePicture = $request->file('profile_picture');
+            $profilePictureName = time().'.'.$profilePicture->getClientOriginalExtension();
+            $profilePicture->move(public_path('profile_pictures'), $profilePictureName);
+            $user->profile_picture = $profilePictureName;
+        }
+
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        $user->save();
+
+        return redirect()->route('teacher.profile.edit')->with('success', 'Profile updated successfully.');
+    }
+
+
+    public function edit(){
+
+        $user=User::findOrFail(auth()->user()->id);
+        return view('teacher.profile',compact('user'));
+    }
+
+
+
+
 }

@@ -1,24 +1,35 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\CourseTeacherController;
+use App\Http\Controllers\WelcomeController;
+
 
 // Authentication routes
 Auth::routes();
 
 // Public route
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('index');
+Route::get('/', [WelcomeController::class, 'index'])->name('index');
+Route::get('/details/{id}', [WelcomeController::class, 'detail'])->name('details');
 
 
+Route::get('/dashboard', function () {
+    return view('layouts.dashboard');
+})->name('index')->middleware('auth');
 // Auth and Admin middleware group
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    Route::get('/', function () {
-        return view('layouts.dashboard');
-    })->name('index');
+
 
 
     Route::get('/admin/profile', [AdminController::class, 'editProfile'])->name('profile.edit');
@@ -49,20 +60,34 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/teachers/{teacher}/assign-course', [CourseTeacherController::class, 'assignCourse'])->name('assign-course');
     Route::put('/teachers/{teacher}/course/{pivot_id}', [CourseTeacherController::class, 'update'])->name('teacher.courses.update');
     Route::delete('/teachers/{teacher}/courses/{course}', [CourseTeacherController::class, 'destroy'])->name('teachers.courses.delete');
+    Route::resource('commissions', CommissionController::class);
+
+
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
-    Route::get('/', function () {
-        return view('layouts.dashboard');
-    })->name('index');
+    // Route::get('/', function () {
+    //     return view('layouts.dashboard');
+    // })->name('index');
 
+    Route::get('/sessions', [MeetingController::class, 'index'])->name('sessions.index');
+    Route::post('/sessions', [MeetingController::class, 'store'])->name('sessions.store');
+    Route::get('/sessions/{session}', [MeetingController::class, 'show'])->name('sessions.show');
+    Route::put('/sessions/{id}', [MeetingController::class, 'update'])->name('sessions.update');
+    Route::delete('/sessions/{id}', [MeetingController::class, 'destroy'])->name('sessions.destroy');
+
+
+    Route::get('/teacher/profile', [TeacherController::class, 'edit'])->name('teacher.profile.edit');
+    Route::put('/teacher/profile/update', [TeacherController::class, 'updateProfile'])->name('teacher.profile.update');
 
 });
+
+
 
 
 
 
 
 // Home route
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
