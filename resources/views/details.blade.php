@@ -207,6 +207,13 @@
 </header>
 
 
+<!-- Add this spinner element in your modal or somewhere appropriate in your HTML -->
+<div id="loading-spinner" class="spinner-border text-primary" role="status" style="display: none;">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+
+
+
 
 
 <main>
@@ -807,50 +814,110 @@ $formattedDate = now()->format('Y-m-d');
 
     // Event listener for registration form submission
     document.getElementById('registerForm').addEventListener('submit', function (event) {
-        event.preventDefault();
+    event.preventDefault();
 
-        const first_name = document.getElementById('first_name').value;
-        const last_name = document.getElementById('last_name').value;
-        const email = document.getElementById('email').value;
+    const first_name = document.getElementById('first_name').value;
+    const last_name = document.getElementById('last_name').value;
+    const email = document.getElementById('email').value;
 
-        if (!first_name || !last_name || !email) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please fill out all fields.',
-            });
-            return;
-        }
+    if (!first_name || !last_name || !email) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please fill out all fields.',
+        });
+        return;
+    }
 
-        fetch('/register-temp-user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ first_name, last_name, email })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.user_id) {
-                window.location.href = `/checkout/${data.user_id}`;
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to register user.',
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error registering user:', error);
+    // Show the loading spinner
+    document.getElementById('loading-spinner').style.display = 'block';
+
+    fetch('/register-temp-user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ first_name, last_name, email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Hide the loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
+
+        if (data.user_id) {
+            window.location.href = `/checkout/${data.user_id}`;
+        } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Failed to register user.',
             });
+        }
+    })
+    .catch(error => {
+        console.error('Error registering user:', error);
+
+        // Hide the loading spinner
+        document.getElementById('loading-spinner').style.display = 'none';
+
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to register user.',
         });
     });
+});
+
+
+
+
+
+    // document.getElementById('registerForm').addEventListener('submit', function (event) {
+    //     event.preventDefault();
+
+    //     const first_name = document.getElementById('first_name').value;
+    //     const last_name = document.getElementById('last_name').value;
+    //     const email = document.getElementById('email').value;
+
+    //     if (!first_name || !last_name || !email) {
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error',
+    //             text: 'Please fill out all fields.',
+    //         });
+    //         return;
+    //     }
+
+    //     fetch('/register-temp-user', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    //         },
+    //         body: JSON.stringify({ first_name, last_name, email })
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.user_id) {
+    //             window.location.href = `/checkout/${data.user_id}`;
+    //         } else {
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Error',
+    //                 text: 'Failed to register user.',
+    //             });
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error('Error registering user:', error);
+    //         Swal.fire({
+    //             icon: 'error',
+    //             title: 'Error',
+    //             text: 'Failed to register user.',
+    //         });
+    //     });
+    // });
 </script>
 
 
