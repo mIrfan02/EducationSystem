@@ -2,24 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Course;
+use App\Models\User; // Assuming teachers are represented by a User model or similar
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Commission extends Model
 {
     use HasFactory;
+
     protected $table = 'commissions';
 
-    // Define which attributes can be mass-assigned
     protected $fillable = [
         'rate',
-        'course_id',
+        'teacher_id',
+        'session_fee',
+        // Update to include teacher_id
     ];
 
-    // Define the relationship with the Course model
-    public function course()
+    public function teacher()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(User::class, 'teacher_id'); // Assuming User model for teachers
     }
 }

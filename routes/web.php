@@ -78,8 +78,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/teachers/{teacher}/course/{pivot_id}', [CourseTeacherController::class, 'update'])->name('teacher.courses.update');
     Route::delete('/teachers/{teacher}/courses/{course}', [CourseTeacherController::class, 'destroy'])->name('teachers.courses.delete');
     Route::resource('commissions', CommissionController::class);
-
-
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
@@ -98,6 +96,7 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher/profile', [TeacherController::class, 'edit'])->name('teacher.profile.edit');
     Route::put('/teacher/profile/update', [TeacherController::class, 'updateProfile'])->name('teacher.profile.update');
 
+    Route::get('/teacher/{id}/session-fee', [CommissionController::class, 'getSessionFee'])->name('teacher.session-fee');
 });
 
 
