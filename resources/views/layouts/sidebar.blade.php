@@ -67,7 +67,7 @@
                     <i class="fa-solid fa-handshake menu-icon"></i>
                 </a>
             </li>
-
+            {{-- email done --}}
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('sessions.index') }}">
