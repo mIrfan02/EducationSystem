@@ -2,18 +2,24 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\CourseTeacherController;
-use App\Http\Controllers\WelcomeController;
 
 
 // Authentication routes
 Auth::routes();
+
+Route::get('/auth/check', function () {
+    return response()->json(['authenticated' => Auth::check()]);
+});
 
 // Public route
 // Route::get('/', function () {
@@ -21,6 +27,17 @@ Auth::routes();
 // })->name('index');
 Route::get('/', [WelcomeController::class, 'index'])->name('index');
 Route::get('/details/{id}', [WelcomeController::class, 'detail'])->name('details');
+
+Route::post('/cart/add', [CartController::class, 'addToCart']);
+Route::get('/cart/items', [CartController::class, 'fetchCartItems']);
+Route::delete('/cart/delete/{id}', [CartController::class, 'deleteCartItem']);
+
+Route::post('/register-temp-user', [PaymentController::class, 'registerTempUser']);
+
+Route::get('/checkout/{user_id}', [PaymentController::class, 'checkout'])->name('checkout');
+
+Route::get('/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('stripe.checkout');
+
 
 
 Route::get('/dashboard', function () {
