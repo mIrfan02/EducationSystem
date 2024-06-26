@@ -38,6 +38,12 @@ Route::get('/checkout/{user_id}', [PaymentController::class, 'checkout'])->name(
 
 Route::get('/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('stripe.checkout');
 
+Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
+// routes/web.php
+
+Route::get('/payment/success', function () {
+    return view('payment.success');
+})->name('payment.success');
 
 
 Route::get('/dashboard', function () {

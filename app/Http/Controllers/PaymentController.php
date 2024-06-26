@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use Stripe\Stripe;
+use App\Models\Cart;
 use App\Models\User;
+use App\Models\Booking;
+use App\Models\Meeting;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\UserCredentialsMail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -68,31 +72,156 @@ class PaymentController extends Controller
     //     return view('checkout', compact('user', 'total_price'));
     // }
 
-    public function processPayment(Request $request)
-    {
-        try {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+    // public function processPayment(Request $request)
+    // {
 
-            $paymentIntent = PaymentIntent::create([
-                'amount' => $request->total_price * 100, // Stripe requires amount in cents
-                'currency' => 'usd', // Change as per your currency
-                'payment_method' => $request->payment_method_id,
-                'confirmation_method' => 'manual',
+    //     $paymentMethodId = $request->input('payment_method_id');
+    //     $userId = $request->input('user_id');
+    //     $email = $request->input('email');
+    //     $session_id = $request->session()->getId(); // Get current session ID
+    //     $totalPrice = $request->input('total_price');
+
+    //     try {
+    //         // Set your secret key: remember to change this to your live secret key in production
+    //         Stripe::setApiKey(config('services.stripe.secret'));
+
+    //         // Start a transaction to ensure data consistency
+    //         DB::beginTransaction();
+
+    //         try {
+    //             // Fetch cart items based on current session ID
+    //             $cartItems = Cart::where('session_id', $session_id)->get();
+
+    //             // Calculate total amount in cents for the PaymentIntent
+    //             $totalAmount = $totalPrice * 100; // Assuming total_price is in dollars
+
+    //             // Create a Stripe PaymentIntent with return_url
+    //             $paymentIntent = \Stripe\PaymentIntent::create([
+    //                 'amount' => $totalAmount,
+    //                 'currency' => 'usd',
+    //                 'payment_method' => $paymentMethodId,
+    //                 'confirm' => true,
+    //                 'description' => 'Booking payment',
+    //                 'receipt_email' => $email,
+    //                 'return_url' => route('payment.success'), // Replace with your success route
+    //             ]);
+
+    //             foreach ($cartItems as $cartItem) {
+    //                 // Retrieve the meeting details for booking
+    //                 $meeting = Meeting::findOrFail($cartItem->meeting_id);
+
+    //                 // Create a new booking record (assuming payment is successful)
+    //                 $booking = Booking::create([
+    //                     'student_id' => $userId,
+    //                     'teacher_id' => $meeting->teacher_id,
+    //                     'meeting_id' => $meeting->id,
+    //                     'booking_date' => now(),
+    //                     'session_date' => $meeting->date,
+    //                     'start_time' => $meeting->start_time,
+    //                     'end_time' => $meeting->end_time,
+    //                     'status' => 'pending',
+    //                     'comments' => 'Booking created via payment',
+    //                 ]);
+
+    //                 // Optionally, you can remove the item from the cart after booking
+    //                 $cartItem->delete();
+    //             }
+
+    //             // Commit the transaction if everything is successful
+    //             DB::commit();
+
+    //             // Handle post-booking tasks like sending emails, notifications, etc.
+
+    //             // Redirect to payment.success route with success message
+    //             return response()->json(['success' => true, 'redirect' => route('payment.success')]);
+    //         } catch (\Exception $e) {
+    //             // Rollback the transaction if there's an error
+    //             DB::rollback();
+
+    //             return response()->json(['success' => false, 'message' => 'Booking creation failed: ' . $e->getMessage()]);
+    //         }
+    //     } catch (CardException $e) {
+    //         // Payment failed (card declined, etc.)
+    //         return response()->json(['success' => false, 'message' => 'Card declined: ' . $e->getMessage()]);
+    //     } catch (\Exception $e) {
+    //         // Generic error handling
+    //         return response()->json(['success' => false, 'message' => 'Payment failed: ' . $e->getMessage()]);
+    //     }
+    // }
+
+    public function processPayment(Request $request)
+{
+    $paymentMethodId = $request->input('payment_method_id');
+    $userId = $request->input('user_id');
+    $email = $request->input('email');
+    $session_id = $request->session()->getId(); // Get current session ID
+    $totalPrice = $request->input('total_price');
+
+    try {
+        // Set your secret key: remember to change this to your live secret key in production
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        // Start a transaction to ensure data consistency
+        DB::beginTransaction();
+
+        try {
+            // Fetch cart items based on current session ID
+            $cartItems = Cart::where('session_id', $session_id)->get();
+
+            // Calculate total amount in cents for the PaymentIntent
+            $totalAmount = $totalPrice * 100; // Assuming total_price is in dollars
+
+            // Create a Stripe PaymentIntent with return_url
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => $totalAmount,
+                'currency' => 'usd',
+                'payment_method' => $paymentMethodId,
                 'confirm' => true,
-                'description' => 'Payment for services',
-                'metadata' => [
-                    'user_id' => $request->user_id,
-                    'email' => $request->email,
-                ],
+                'description' => 'Booking payment',
+                'receipt_email' => $email,
+                'return_url' => route('payment.success'), // Replace with your success route
             ]);
 
-            return response()->json(['success' => true]);
-        } catch (CardException $e) {
-            Log::error('Stripe Card Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Payment failed. Please check your card details and try again.'], 500);
+            foreach ($cartItems as $cartItem) {
+                // Retrieve the meeting details for booking
+                $meeting = Meeting::findOrFail($cartItem->meeting_id);
+
+                // Create a new booking record (assuming payment is successful)
+                $booking = Booking::create([
+                    'student_id' => $userId,
+                    'teacher_id' => $meeting->teacher_id,
+                    'meeting_id' => $meeting->id,
+                    'booking_date' => now(),
+                    'session_date' => $meeting->date,
+                    'start_time' => $meeting->start_time,
+                    'end_time' => $meeting->end_time,
+                    'status' => 'pending',
+                    'comments' => 'Booking created via payment',
+                ]);
+
+                // Optionally, you can remove the item from the cart after booking
+                $cartItem->delete();
+            }
+
+            // Commit the transaction if everything is successful
+            DB::commit();
+
+            // Redirect to payment.success route with success message
+            return response()->json(['success' => true, 'redirect' => route('payment.success')]);
         } catch (\Exception $e) {
-            Log::error('Stripe Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Payment failed. Please try again later.'], 500);
+            // Rollback the transaction if there's an error
+            DB::rollback();
+
+            return response()->json(['success' => false, 'message' => 'Booking creation failed: ' . $e->getMessage()]);
         }
+    } catch (CardException $e) {
+        // Payment failed (card declined, etc.)
+        return response()->json(['success' => false, 'message' => 'Card declined: ' . $e->getMessage()]);
+    } catch (\Exception $e) {
+        // Generic error handling
+        return response()->json(['success' => false, 'message' => 'Payment failed: ' . $e->getMessage()]);
     }
+}
+
+
 }
