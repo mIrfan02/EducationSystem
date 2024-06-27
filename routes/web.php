@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TeacherController;
@@ -102,7 +103,11 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher/profile', [TeacherController::class, 'edit'])->name('teacher.profile.edit');
     Route::put('/teacher/profile/update', [TeacherController::class, 'updateProfile'])->name('teacher.profile.update');
 
+    Route::get('/teacher/bookings', [BookingController::class, 'getTeacherBookings'])->name('teacher.bookings');
+
+
     Route::get('/teacher/{id}/session-fee', [CommissionController::class, 'getSessionFee'])->name('teacher.session-fee');
+
 });
 
 
