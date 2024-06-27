@@ -57,7 +57,16 @@
                     <i class="fa-solid fa-percent menu-icon"></i>
                 </a>
             </li>
-        @endif
+
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.withdrawal_requests') }}">
+                    <span class="menu-title">Withdraw Requests</span>
+                    <i class="fa-solid fa-book menu-icon"></i>
+                </a>
+            </li>
+
+            @endif
 
         @if (auth()->check() && auth()->user()->hasRole('teacher'))
 
@@ -76,8 +85,30 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('wallet.show') }}">
+                    <span class="menu-title">Wallet</span>
+                    <i class="fa-solid fa-book menu-icon"></i>
+                </a>
+            </li>
+
 
 
     @endif
+
+
+    @if (auth()->check() && auth()->user()->hasRole('student'))
+
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('student.bookings') }}">
+            <span class="menu-title">My Booking</span>
+            <i class="fa-solid fa-book menu-icon"></i>
+        </a>
+    </li>
+
+    @endif
+
+
     </ul>
 </nav>
