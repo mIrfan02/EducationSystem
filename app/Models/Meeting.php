@@ -23,4 +23,15 @@ class Meeting extends Model
         return view('teacher.show', compact('teacher'));
     }
 
+    public function bookings()
+{
+    return $this->hasMany(Booking::class);
+}
+
+public function teacher()
+{
+    return $this->belongsTo(User::class, 'teacher_id');
+}
+
+
 }
