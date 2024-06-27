@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\PaymentController;
@@ -37,7 +38,7 @@ Route::post('/register-temp-user', [PaymentController::class, 'registerTempUser'
 
 Route::get('/checkout/{user_id}', [PaymentController::class, 'checkout'])->name('checkout');
 
-Route::get('/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('stripe.checkout');
+// Route::get('/stripe/checkout', [StripePaymentController::class, 'checkout'])->name('stripe.checkout');
 
 Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
 // routes/web.php
@@ -85,6 +86,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/teachers/{teacher}/course/{pivot_id}', [CourseTeacherController::class, 'update'])->name('teacher.courses.update');
     Route::delete('/teachers/{teacher}/courses/{course}', [CourseTeacherController::class, 'destroy'])->name('teachers.courses.delete');
     Route::resource('commissions', CommissionController::class);
+
+    Route::get('/admin/withdrawal-requests', [AdminController::class, 'showWithdrawalRequests'])->name('admin.withdrawal_requests');
+    Route::post('/admin/withdrawal-requests/{id}/approve', [AdminController::class, 'approveWithdrawalRequest'])->name('admin.approve_withdrawal_request');
+
+
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
@@ -108,9 +114,24 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
 
     Route::get('/teacher/{id}/session-fee', [CommissionController::class, 'getSessionFee'])->name('teacher.session-fee');
 
+
+    Route::get('/teacher/wallet', [WalletController::class, 'showWallet'])->name('wallet.show');
+
+    Route::post('/teacher/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
 });
 
 
+
+Route::middleware(['auth', 'role:student'])->group(function () {
+
+    // Route::get('/', function () {
+    //     return view('layouts.dashboard');
+    // })->name('index');
+
+    Route::get('/student/bookings', [BookingController::class, 'showStudentBookings'])->name('student.bookings');
+
+
+});
 
 
 

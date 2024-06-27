@@ -32,6 +32,10 @@ public function teacher()
 {
     return $this->belongsTo(User::class, 'teacher_id');
 }
+public function commission()
+{
+    return $this->belongsTo(Commission::class);
+}
 
 
 }

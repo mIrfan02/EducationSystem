@@ -17,4 +17,17 @@ class BookingController extends Controller
 
         return view('booking.index', compact('bookings'));
     }
+
+
+    public function showStudentBookings()
+    {
+        $studentId = auth()->user()->id;
+
+        // Fetch all bookings for the authenticated student
+        $bookings = Booking::where('student_id', $studentId)->with('meeting')->get();
+        return view('student.booking', compact('bookings'));
+    }
+
+
+
 }
