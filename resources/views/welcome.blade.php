@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <!-- Coding by CodingLab | www.codinglabweb.com -->
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Education System</title>
     <!-- Swiper CSS -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
     <!-- CSS -->
-    <link rel="stylesheet" href="{{ asset ('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -22,15 +21,14 @@
 
 
 </head>
+
 <body>
     <header class="header-wrap">
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container">
                 <a class="navbar-brand" href="#">Education Portal</a>
-                <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -43,15 +41,33 @@
                             <a class="nav-link" href="#aboutus">About Us</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link"
-                                href="#instructors">Instructors</a>
+                            <a class="nav-link" href="#instructors">Instructors</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#contact">Contact</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{route('login')}}">Login</a>
+                        </li> --}}
+
+                        <li class="nav-item dropdown" onmouseover="showDropdown()">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">
+                                Login
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="loginDropdown">
+                                <a class="dropdown-item" href="{{ route('login') }}" style="color: black">Admin</a>
+                                <a class="dropdown-item" href="{{ route('login') }}" style="color: black">Teacher</a>
+                                <a class="dropdown-item" href="{{ route('login') }}" style="color: black">Student</a>
+                            </div>
                         </li>
+
+                        <script>
+                            function showDropdown() {
+                                document.getElementById("loginDropdown").classList.add("show");
+                            }
+                        </script>
+
                     </ul>
                 </div>
             </div>
@@ -116,7 +132,7 @@
                         </div>
                     </div>
                     <div class="about-img">
-                        <img src="{{asset('assets/images/11.webp')}}" alt="">
+                        <img src="{{ asset('assets/images/11.webp') }}" alt="">
                     </div>
                 </div>
             </div>
@@ -276,26 +292,27 @@
             <div class="slide-content">
                 <div class="card-wrapper swiper-wrapper">
                     @foreach ($teachers as $teacher)
-                    <div class="card swiper-slide">
-                        <div class="image-content">
-                            <span class="overlay"></span>
-                            <div class="card-image">
-                                @php
-                                    $profilePicture = $teacher->profile_picture
-                                        ? asset('profile_pictures/' . $teacher->profile_picture)
-                                        : 'https://via.placeholder.com/150'; // Placeholder image URL
-                                @endphp
-                                <img src="{{ $profilePicture }}" alt="Profile Picture" class="card-img">
+                        <div class="card swiper-slide">
+                            <div class="image-content">
+                                <span class="overlay"></span>
+                                <div class="card-image">
+                                    @php
+                                        $profilePicture = $teacher->profile_picture
+                                            ? asset('profile_pictures/' . $teacher->profile_picture)
+                                            : 'https://via.placeholder.com/150'; // Placeholder image URL
+                                    @endphp
+                                    <img src="{{ $profilePicture }}" alt="Profile Picture" class="card-img">
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h2 class="name">{{ $teacher->first_name }} {{ $teacher->last_name }}</h2>
+                                <p class="description">Professional Teacher</p>
+                                <img src="{{ asset('assets/images/rating.png') }}" alt="Rating">
+                                {{-- <button class="button">Reserve a meeting</button> --}}
+                                <a class="button" href="{{ route('details', $teacher->id) }}"
+                                    style=" text-decoration:none;">Reserve a meeting</a>
                             </div>
                         </div>
-                        <div class="card-content">
-                            <h2 class="name">{{ $teacher->first_name }} {{ $teacher->last_name }}</h2>
-                            <p class="description">Professional Teacher</p>
-                            <img src="{{ asset('assets/images/rating.png') }}" alt="Rating">
-                            {{-- <button class="button">Reserve a meeting</button> --}}
-                            <a class="button" href="{{route('details',$teacher->id)}}" style=" text-decoration:none;">Reserve a meeting</a>
-                        </div>
-                    </div>
                     @endforeach
                 </div>
             </div>
@@ -336,5 +353,6 @@
 <!-- Swiper JS -->
 <script src="{{ asset('assets/js/landingjs/swiper-bundle.min.js') }}"></script>
 <!-- JavaScript -->
-<script src="{{ asset('assets/js/landingjs/script.js')}}"></script>
+<script src="{{ asset('assets/js/landingjs/script.js') }}"></script>
+
 </html>

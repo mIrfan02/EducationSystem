@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Meeting;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+
 class MeetingController extends Controller
 {
     public function index()
@@ -43,14 +44,15 @@ class MeetingController extends Controller
 
     public function store(Request $request)
     {
+        // dd(request()->all());
         $request->validate([
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'title' => 'required|string|max:255',
             'meeting_link' => 'required|url|max:255',
-            'fee_per_hour' => 'required|numeric|min:0',
-            'session_type'=>'required',
+            'fee_per_hour' => 'required|numeric|min:0', // validate as per your requirements
+            'session_type' => 'required',
         ]);
 
         // Check for overlapping sessions
@@ -76,9 +78,9 @@ class MeetingController extends Controller
         $meeting->end_time = $request->end_time;
         $meeting->title = $request->title;
         $meeting->meeting_link = $request->meeting_link;
-        $meeting->fee_per_hour = $request->fee_per_hour;
+        $meeting->fee_per_hour = $request->fee_per_hour; // directly use fee_per_hour from request
         $meeting->teacher_id = $request->teacher_id;
-        $meeting->session_type=$request->session_type;
+        $meeting->session_type = $request->session_type;
         $meeting->save();
 
         Alert::success('Success', 'Session added successfully.');
@@ -109,7 +111,7 @@ class MeetingController extends Controller
             'title' => 'required|string|max:255',
             'meeting_link' => 'required|url|max:255',
             'fee_per_hour' => 'required|numeric|min:0',
-            'session_type'=>'required',
+            'session_type' => 'required',
 
         ]);
 
@@ -120,7 +122,7 @@ class MeetingController extends Controller
             ->where(function ($query) use ($request) {
                 $query->where(function ($query) use ($request) {
                     $query->where('start_time', '<', $request->end_time)
-                          ->where('end_time', '>', $request->start_time);
+                        ->where('end_time', '>', $request->start_time);
                 });
             })
             ->exists();
@@ -136,7 +138,7 @@ class MeetingController extends Controller
         $meeting->meeting_link = $request->meeting_link;
         $meeting->fee_per_hour = $request->fee_per_hour;
         $meeting->teacher_id = $request->teacher_id;
-        $meeting->session_type=$request->session_type;
+        $meeting->session_type = $request->session_type;
 
         $meeting->save();
 
@@ -178,7 +180,7 @@ class MeetingController extends Controller
 
     public function destroy($id)
     {
-        $meeting=Meeting::findOrFail($id);
+        $meeting = Meeting::findOrFail($id);
         $meeting->delete();
         Alert::success('Success', 'Session deleted successfully.');
         return redirect()->back();
