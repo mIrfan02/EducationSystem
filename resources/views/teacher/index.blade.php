@@ -32,6 +32,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
+                            {{-- data table  --}}
                             <tbody>
                                 @php
                                     $index = 0;
