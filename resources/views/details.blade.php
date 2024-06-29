@@ -801,7 +801,8 @@ $formattedDate = now()->format('Y-m-d');
             .then(data => {
                 if (data.authenticated) {
                     // User is authenticated, redirect to checkout
-                    window.location.href = '/checkout';
+                    // window.location.href = '/checkout';
+                    window.location.href = `/checkout/${data.user_id}`;
                 } else {
                     // User is not authenticated, open the registration modal
                     $('#registerModal').modal('show');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -25,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard';
+    protected $redirectTo ;
 
     /**
      * Create a new controller instance.
@@ -37,4 +38,17 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+    protected function authenticated(Request $request, $user)
+    {
+        if (auth()->user()->hasRole('admin')) {
+            $this->redirectTo = '/dashboard';
+        } elseif (auth()->user()->hasRole('teacher')) {
+            $this->redirectTo = '/dashboard/teacher';
+        } elseif (auth()->user()->hasRole('student')) {
+            $this->redirectTo = '/dashboard/student';
+        }
+
+        return redirect()->intended($this->redirectPath());
+    }
+
 }

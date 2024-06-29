@@ -27,6 +27,7 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'contact_no',
+        'is_teacher',
 
     ];
 
@@ -76,5 +77,7 @@ public function bookingsAsTeacher()
 {
     return $this->hasMany(Booking::class, 'teacher_id');
 }
+
+
 
 }
