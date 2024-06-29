@@ -9,6 +9,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CategoryController;
@@ -19,15 +20,27 @@ use App\Http\Controllers\CourseTeacherController;
 // Authentication routes
 Auth::routes();
 
+// Route::get('/auth/check', function () {
+//     return response()->json(['authenticated' => Auth::check()]);
+// });
+
+// In your routes/web.php or api.php
 Route::get('/auth/check', function () {
-    return response()->json(['authenticated' => Auth::check()]);
+    if (Auth::check()) {
+        return response()->json(['authenticated' => true, 'user_id' => Auth::id()]);
+    } else {
+        return response()->json(['authenticated' => false]);
+    }
 });
+
+
+
 
 // Public route
 // Route::get('/', function () {
 //     return view('welcome');
 // })->name('index');
-Route::get('/', [WelcomeController::class, 'index'])->name('index');
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome.index');
 Route::get('/details/{id}', [WelcomeController::class, 'detail'])->name('details');
 
 Route::post('/cart/add', [CartController::class, 'addToCart']);
@@ -43,19 +56,26 @@ Route::get('/checkout/{user_id}', [PaymentController::class, 'checkout'])->name(
 Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
 // routes/web.php
 
+Route::get('/register/teacher', [WelcomeController::class, 'register'])->name('teacher.register');
+
+
+Route::post('/register/teacher', [WelcomeController::class, 'registerteacher'])->name('teacher.registerteacher');
+
+
+
 Route::get('/payment/success', function () {
     return view('payment.success');
 })->name('payment.success');
 
 
-Route::get('/dashboard', function () {
-    return view('layouts.dashboard');
-})->name('index')->middleware('auth');
+// Route::get('/dashboard', function () {
+//     return view('layouts.dashboard');
+// })->name('index')->middleware('auth');
 // Auth and Admin middleware group
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
-
+    Route::get('/dashboard', [WelcomeController::class, 'dashboard'])->name('index');
 
     Route::get('/admin/profile', [AdminController::class, 'editProfile'])->name('profile.edit');
     Route::put('/admin/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
@@ -91,13 +111,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/withdrawal-requests/{id}/approve', [AdminController::class, 'approveWithdrawalRequest'])->name('admin.approve_withdrawal_request');
 
 
+
+    Route::get('/admin/approve/teachers', [AdminController::class, 'approveTeacher'])->name('admin.approve.teacher');
+    Route::post('/admin/approve/teacher/{id}', [AdminController::class, 'approveTeachers'])->name('approve.teachers');
+
+
+
 });
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
-    // Route::get('/', function () {
+    // Route::get('/dashboard', function () {
     //     return view('layouts.dashboard');
     // })->name('index');
+    Route::get('/dashboard/teacher', [WelcomeController::class, 'dashboardteacher'])->name('teacher.index');
 
     Route::get('/sessions', [MeetingController::class, 'index'])->name('sessions.index');
     Route::post('/sessions', [MeetingController::class, 'store'])->name('sessions.store');
@@ -124,12 +151,13 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
 
 Route::middleware(['auth', 'role:student'])->group(function () {
 
-    // Route::get('/', function () {
-    //     return view('layouts.dashboard');
-    // })->name('index');
+    Route::get('/dashboard/student', [WelcomeController::class, 'dashboardstudent'])->name('student.index');
+
 
     Route::get('/student/bookings', [BookingController::class, 'showStudentBookings'])->name('student.bookings');
 
+    Route::get('/student/profile', [StudentController::class, 'editProfile'])->name('student.profile.edit');
+    Route::put('/student/profile', [StudentController::class, 'updateProfile'])->name('student.profile.update');
 
 });
 

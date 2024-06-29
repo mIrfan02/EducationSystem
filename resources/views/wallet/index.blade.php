@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-sm-flex align-items-center mb-4">
-                    <h4 class="card-title mb-sm-0">Wallet Balance</h4>
+                    <h4 class="card-title mb-sm-0">Wallet Balance {{ $wallet->balance - $wallet->deduct_balance }}</h4>
                 </div>
 
                 <div class="table-responsive">
@@ -48,12 +48,12 @@
                 <h5 class="modal-title" id="withdrawModalLabel">Request Withdrawal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('wallet.withdraw') }}" method="POST">
+            <form id="withdrawForm" action="{{ route('wallet.withdraw') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="withdrawAmount" class="form-label">Amount to Withdraw</label>
-                        <input type="number" class="form-control" id="withdrawAmount" name="withdraw_amount" step="0.01" min="0.01" max="{{ $wallet->balance }}" required>
+                        <input type="number" class="form-control" id="withdrawAmount" name="withdraw_amount" step="0.01" min="0.01" max="{{ $wallet->balance - $wallet->deduct_balance }}" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -94,3 +94,21 @@
 </div>
 
 @endsection
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the input element
+        let withdrawAmountInput = document.getElementById('withdrawAmount');
+
+        // Set max attribute dynamically
+        withdrawAmountInput.setAttribute('max', {{ $wallet->balance - $wallet->deduct_balance }});
+
+        // Add event listener to validate on change
+        withdrawAmountInput.addEventListener('input', function() {
+            let maxWithdraw = {{ $wallet->balance - $wallet->deduct_balance }};
+            if (parseFloat(this.value) > maxWithdraw) {
+                this.value = maxWithdraw.toFixed(2); // Set value to max allowed
+            }
+        });
+    });
+</script>

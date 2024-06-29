@@ -18,6 +18,18 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
 
+    <style>
+        .navbar-brand {
+            display: inline-block; /* Ensures the link behaves like a block element */
+            height: auto; /* Ensures the image retains its aspect ratio */
+        }
+
+        .logo-img {
+            height: 40px; /* Adjust height as needed */
+            width: auto; /* Automatically adjusts width based on height */
+            max-width: 100%; /* Ensures the image does not exceed its parent's width */
+        }
+    </style>
 
 
 </head>
@@ -26,7 +38,11 @@
     <header class="header-wrap">
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="#">Education Portal</a>
+                {{-- <a class="navbar-brand" href="#">Education Portal</a> --}}
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    <img src="{{ asset('assets/images/elogo.png') }}" alt="ESOL Logo" class="logo-img">
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -40,11 +56,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#aboutus">About Us</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#instructors">Instructors</a>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="#contact">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('teacher.register') }}">Become Instructor</a>
                         </li>
                         {{-- <li class="nav-item">
                             <a class="nav-link" href="{{route('login')}}">Login</a>

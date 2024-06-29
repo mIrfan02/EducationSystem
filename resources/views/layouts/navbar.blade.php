@@ -1,7 +1,8 @@
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-      <a class="navbar-brand brand-logo" href="index.html">
-        <img src="{{  asset('assets/images/logo.svg')}}" alt="logo" class="logo-dark" />
+      <a class="navbar-brand brand-logo" href="#">
+        <img  src="{{ asset('assets/images/esollogo.jpg') }}" alt="logo" class="logo-dark" />
+
         <img src="{{  asset('assets/images/logo-light.svg')}}" alt="logo-light" class="logo-light">
       </a>
       <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{{  asset('assets/images/logo-mini.svg')}}" alt="logo" /></a>
@@ -30,6 +31,13 @@
                     <a class="dropdown-item" href="{{ route('teacher.profile.edit') }}">
                         <i class="dropdown-item-icon icon-user text-primary"></i> My Profile
                     </a>
+                    @elseif(auth()->user()->hasRole('student'))
+                    <a class="dropdown-item" href="{{ route('student.profile.edit') }}">
+                        <i class="dropdown-item-icon icon-user text-primary"></i> My Profile
+                    </a>
+
+
+
                 @endif
 
             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

@@ -1,17 +1,25 @@
+
+@php
+$profilePicture = auth()->user()->profile_picture
+    ? asset('profile_pictures/' . auth()->user()->profile_picture)
+    : 'https://via.placeholder.com/150'; // Placeholder image URL
+@endphp
+
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item navbar-brand-mini-wrapper">
-            <a class="nav-link navbar-brand brand-logo-mini" href="index.html"><img src="{{asset('assets/images/logo-mini.svg')}}" alt="logo" /></a>
+
         </li>
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="profile-image">
-                    <img class="img-xs rounded-circle" src="{{ asset('assets/images/faces/face8.jpg')}} " alt="profile image">
+                    <img class="img-xs rounded-circle" src="{{ $profilePicture }}" alt="profile image">
                     <div class="dot-indicator bg-success"></div>
                 </div>
                 <div class="text-wrapper">
                     <p class="profile-name">{{auth()->user()->name ??  auth()->user()->first_name . ' '.auth()->user()->last_name }}</p>
-                    <p class="designation">Administrator</p>
+                    <p class="designation">{{ auth()->user()->getRoleNames()->first() }}</p>
+
                 </div>
                 <div class="icon-container">
                     <i class="icon-bubbles"></i>
@@ -23,11 +31,20 @@
             <span class="nav-link">Dashboard</span>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route("index") }}">
+            <a class="nav-link" href="
+                @if (Auth::user()->hasRole('admin'))
+                    {{ route('index') }}
+                @elseif (Auth::user()->hasRole('teacher'))
+                    {{ route('teacher.index') }}
+                @elseif (Auth::user()->hasRole('student'))
+                    {{ route('student.index') }}
+                @endif
+            ">
                 <span class="menu-title">Dashboard</span>
                 <i class="icon-screen-desktop menu-icon"></i>
             </a>
         </li>
+
 
         @if (auth()->check() && auth()->user()->hasRole('admin'))
             <li class="nav-item">
@@ -63,6 +80,13 @@
                 <a class="nav-link" href="{{ route('admin.withdrawal_requests') }}">
                     <span class="menu-title">Withdraw Requests</span>
                     <i class="fa-solid fa-book menu-icon"></i>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.approve.teacher') }}">
+                    <span class="menu-title">Approve Teachers</span>
+                    <i class="fa-solid fa-user menu-icon"></i>
                 </a>
             </li>
 

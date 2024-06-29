@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Wallet;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Mail\TeacherApproved;
 use App\Models\WithdrawalRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AdminController extends Controller
@@ -74,7 +78,8 @@ class AdminController extends Controller
     }
 
     // Deduct amount and update status
-    $wallet->balance -= $withdrawalRequest->amount;
+    // $wallet->balance -= $withdrawalRequest->amount;
+    $wallet->deduct_balance += $withdrawalRequest->amount;
     $wallet->save();
 
     $withdrawalRequest->status = 'approved';
@@ -83,5 +88,42 @@ class AdminController extends Controller
     return redirect()->route('admin.withdrawal_requests')->with('success', 'Withdrawal request approved successfully.');
 }
 
+
+
+public function approveTeacher()
+    {
+        // Fetch all users where is_teacher is 1
+        $teachers = User::where('is_teacher', '1')->get();
+
+        return view('approveteacher.index', ['teachers' => $teachers]);
+    }
+
+
+    public function approveTeachers(Request $request, $id)
+    {
+        $teacher = User::findOrFail($id);
+        $password = Str::random(6);
+        $hashedPassword = Hash::make($password);
+
+        // Update the teacher's record
+        $teacher->is_teacher = '0';
+        $teacher->password = $hashedPassword;
+        $teacher->save();
+
+        // Assign the "teacher" role
+        $teacher->assignRole('teacher');
+
+        // Prepare email data
+        $email = $teacher->email;
+        $name = $teacher->first_name . ' ' . $teacher->last_name;
+        $loginUrl = route('login');
+
+        // Send the email
+        Mail::to($email)->send(new TeacherApproved($email, $name, $password, $loginUrl));
+
+        // Redirect back with a success message
+        Alert::success('Success', 'Teacher approved and credentials sent.');
+        return redirect()->back();
+    }
 
 }
