@@ -292,7 +292,7 @@ public function processPayment(Request $request)
             DB::commit();
 
             // Redirect to payment.success route with success message
-            return response()->json(['success' => true, 'redirect' => route('payment.success')]);
+            return response()->json(['success' => true, 'redirect' => route('welcome.index')]);
         } catch (\Exception $e) {
             // Rollback the transaction if there's an error
             DB::rollback();

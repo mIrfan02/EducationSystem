@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Booking;
 use App\Models\Commission;
 use Illuminate\Http\Request;
@@ -177,12 +178,27 @@ class BookingController extends Controller
         return view('booking.finance', compact('bookingsWithEarnings'));
     }
 
-    public function overviewBookings()
-    {
-        // Fetch all bookings with related meeting, teacher, and student data
-        $bookings = Booking::with(['teacher', 'meeting', 'student'])->get();
+    // public function overviewBookings()
+    // {
+    //     // Fetch all bookings with related meeting, teacher, and student data
+    //     $bookings = Booking::with(['teacher', 'meeting', 'student'])->get();
 
-        return view('booking.overview_bookings', compact('bookings'));
-    }
+    //     return view('booking.overview_bookings', compact('bookings'));
+    // }
+
+    public function overviewBookings(Request $request)
+{
+    // Fetch all teachers with the role 'teacher'
+    $teachers = User::role('teacher')->get();
+
+    // Fetch all bookings or filter by selected teacher
+    $bookings = Booking::with(['teacher', 'meeting', 'student'])
+        ->when($request->teacher_id, function ($query, $teacherId) {
+            return $query->where('teacher_id', $teacherId);
+        })
+        ->get();
+
+    return view('booking.overview_bookings', compact('bookings', 'teachers'));
+}
 
 }

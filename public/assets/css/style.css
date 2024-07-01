@@ -177,12 +177,16 @@ img {
     color: #3ee668;
 }
 
-.btn-primary {
+/* .btn-primary {
+    background-color: transparent;
+    border: 1px solid #3ee668;
+} */
+.topbar{
     background-color: transparent;
     border: 1px solid #3ee668;
 }
 
-.btn-primary:hover {
+.topbar:hover {
     background-color: #3ee668;
     border: 1px solid #3ee668;
 }

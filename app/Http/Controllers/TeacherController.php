@@ -16,12 +16,34 @@ class TeacherController extends Controller
 {
 
 
-    public function index(){
+    // public function index(){
 
-        $teachers = User::role('teacher')->get();
+    //     $teachers = User::role('teacher')->get();
 
-        return view('teachers.index', compact('teachers'));
+    //     return view('teachers.index', compact('teachers'));
+    // }
+
+
+    public function index(Request $request)
+{
+    // Fetch all teachers with the role 'teacher'
+    $teachersQuery = User::role('teacher');
+
+    // Apply filtering based on request parameters
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $teachersQuery->where(function ($query) use ($search) {
+            $query->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        });
     }
+
+    // Get the filtered or unfiltered teachers
+    $teachers = $teachersQuery->get();
+
+    return view('teachers.index', compact('teachers'));
+}
 
 
 
