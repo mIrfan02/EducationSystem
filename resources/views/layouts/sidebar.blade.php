@@ -93,14 +93,14 @@ $profilePicture = auth()->user()->profile_picture
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.bookings_with_commission') }}">
                     <span class="menu-title">Finance</span>
-                    <i class="fa-solid fa-wallet menu-icon"></i>
+                    <i class="fa-solid fa-coins menu-icon"></i>
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('admin.overview_bookings') }}">
                     <span class="menu-title">All Bookings</span>
-                    <i class="fa-solid fa-wallet menu-icon"></i>
+                    <i class="fa-solid fa-person-walking menu-icon"></i>
                 </a>
             </li>
 
@@ -126,7 +126,7 @@ $profilePicture = auth()->user()->profile_picture
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('teacher.bookings') }}">
                     <span class="menu-title">Booking</span>
-                    <i class="fa-solid fa-book menu-icon"></i>
+                    <i class="fa-solid fa-person-walking menu-icon"></i>
                 </a>
             </li>
 

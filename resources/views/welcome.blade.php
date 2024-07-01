@@ -103,9 +103,9 @@
                             corrupti
                             eveniet accusamus illo, est earum minima id!
                         </p>
-                        <button class="btn btn-primary" type="button">Contact
+                        <button class="btn btn-primary topbar" type="button">Contact
                             Us</button>
-                        <button class="btn btn-primary" type="button">Read
+                        <button class="btn btn-primary topbar" type="button">Read
                             More</button>
                     </div>
                 </div>

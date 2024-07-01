@@ -8,12 +8,30 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MeetingController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $sessions = Meeting::where('teacher_id', auth()->user()->id)->get();
+    //     return view('teacher.index', compact('sessions'));
+    // }
+
+    public function index(Request $request)
     {
-        $sessions = Meeting::where('teacher_id', auth()->user()->id)->get();
+        $teacherId = auth()->user()->id;
+
+        // Fetch all sessions for the authenticated teacher
+        $sessionsQuery = Meeting::where('teacher_id', $teacherId);
+
+        // Apply filtering based on the request parameter
+        if ($request->filled('start_date')) {
+            $startDate = $request->input('start_date');
+            $sessionsQuery->where('date', $startDate);
+        }
+
+        // Get the filtered or unfiltered sessions
+        $sessions = $sessionsQuery->get();
+
         return view('teacher.index', compact('sessions'));
     }
-
     // public function store(Request $request)
     // {
     //     $request->validate([

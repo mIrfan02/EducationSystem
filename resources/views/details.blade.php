@@ -20,7 +20,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <style>
-        <style>body {
+        body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
         }
@@ -161,6 +161,10 @@
 
         .main-container {
             margin: 3rem;
+        }
+        #checkout-button{
+            background-color: #4caf50 !important;
+            color: #ffc107 !important;
         }
     </style>
 
@@ -348,7 +352,7 @@
         <div class="mt-3" id="cart-details">
             <!-- Cart items will be displayed here -->
         </div>
-        <button id="checkout-button" class="btn btn-primary mbt-3 mb-3 ml-2">Proceed to Checkout</button>
+        <button id="checkout-button" class="btn btn-secondary" >Proceed to Checkout</button>
     </div>
 
 

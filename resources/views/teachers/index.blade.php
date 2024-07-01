@@ -3,7 +3,6 @@
 @section('title','Teachers')
 
 @section('content')
-
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -16,7 +15,15 @@
                     @include('teachers.add-modal')
                 </div>
 
-                <div class="table-responsive">
+                <form method="GET" action="{{ route('teachers.index') }}">
+                    <div class="form-group">
+                        <label for="search">Search Teachers:</label>
+                        <input type="text" name="search" id="search" class="form-control" placeholder="Search by name or email" value="{{ request('search') }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                </form>
+
+                <div class="table-responsive mt-4">
                     <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
                         <thead>
                             <tr>
@@ -35,8 +42,6 @@
                                 <td>{{ $teacher->first_name }}</td>
                                 <td>{{ $teacher->last_name }}</td>
                                 <td>{{ $teacher->contact_no }}</td>
-
-
                                 <td>{{ $teacher->email }}</td>
                                 <td>
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editTeacherModal{{ $teacher->id }}">
@@ -45,22 +50,21 @@
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteTeacherModal{{ $teacher->id }}">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
-                                    <a href="{{ route('teachers.show',$teacher->id) }}" class="btn btn-danger btn-sm" >
+                                    <a href="{{ route('teachers.show',$teacher->id) }}" class="btn btn-danger btn-sm">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                     @include('teachers.edit-modal', ['teacher' => $teacher])
                                     @include('teachers.delete-modal', ['teacher' => $teacher])
                                 </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
