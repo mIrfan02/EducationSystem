@@ -90,6 +90,27 @@ $profilePicture = auth()->user()->profile_picture
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.bookings_with_commission') }}">
+                    <span class="menu-title">Finance</span>
+                    <i class="fa-solid fa-wallet menu-icon"></i>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('admin.overview_bookings') }}">
+                    <span class="menu-title">All Bookings</span>
+                    <i class="fa-solid fa-wallet menu-icon"></i>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('student.requests') }}">
+                    <span class="menu-title">Student Withdrawl</span>
+                    <i class="fa-solid fa-wallet menu-icon"></i>
+                </a>
+            </li>
+
             @endif
 
         @if (auth()->check() && auth()->user()->hasRole('teacher'))
@@ -127,6 +148,13 @@ $profilePicture = auth()->user()->profile_picture
     <li class="nav-item">
         <a class="nav-link" href="{{ route('student.bookings') }}">
             <span class="menu-title">My Booking</span>
+            <i class="fa-solid fa-book menu-icon"></i>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('student.withdrawal_requests') }}">
+            <span class="menu-title">My Wallet</span>
             <i class="fa-solid fa-book menu-icon"></i>
         </a>
     </li>

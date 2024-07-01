@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StudentWallet;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\Wallet;
@@ -45,7 +46,9 @@ class WelcomeController extends Controller
             // Fetch count of bookings fo the authenticated student
             $bookingCount = Booking::where('student_id', $user->id)->count();
 
-            return view('layouts.studentdashbaord', compact('bookingCount'));
+            $wallet=StudentWallet::where('student_id',$user->id)->first();
+
+            return view('layouts.studentdashbaord', compact('bookingCount','wallet'));
 
     }
   }

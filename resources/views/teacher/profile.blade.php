@@ -122,6 +122,13 @@
                 <div class="form-error">{{ $message }}</div>
             @enderror
         </div>
+        <div class="form-group">
+            <label for="bio">Add Bio</label>
+            <textarea class="form-control" id="bio" name="bio" rows="4" required>{{ old('bio', auth()->user()->bio??'N/A') }}</textarea>
+            @error('bio')
+                <div class="form-error">{{ $message }}</div>
+            @enderror
+        </div>
 
         <!-- Password -->
         <div class="form-group">

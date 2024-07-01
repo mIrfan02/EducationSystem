@@ -49,6 +49,7 @@
                                         <td>{{ $session->session_type ?? 'N/A' }} </td>
 
                                         <td>
+
                                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                 data-bs-target="#editSessionModal{{ $session->id }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -61,6 +62,7 @@
                                             @include('teacher.edit-modal', ['session' => $session])
                                             @include('teacher.delete-modal', ['session' => $session])
                                         </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
