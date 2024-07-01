@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('first_name')->after('name')->nullable();
             $table->string('last_name')->after('first_name')->nullable();
             $table->string('contact_no')->after('last_name')->nullable();
+            $table->text('bio')->nullable();
+
         });
     }
 

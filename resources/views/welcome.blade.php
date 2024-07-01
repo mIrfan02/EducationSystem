@@ -371,5 +371,51 @@
 <script src="{{ asset('assets/js/landingjs/swiper-bundle.min.js') }}"></script>
 <!-- JavaScript -->
 <script src="{{ asset('assets/js/landingjs/script.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const teacherCount = {{ count($teachers) }};
+    let slidesPerView = 4;
 
+    if (teacherCount < 4) {
+        slidesPerView = teacherCount;
+    }
+
+    new Swiper(".slide-content", {
+        slidesPerView: slidesPerView,
+        spaceBetween: 25,
+        loop: teacherCount > 1,
+        centerSlide: true,
+        fade: true,
+        grabCursor: true,
+        autoplay: {
+            delay: 2500,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+            },
+            520: {
+                slidesPerView: Math.min(2, teacherCount),
+            },
+            950: {
+                slidesPerView: Math.min(3, teacherCount),
+            },
+            1200: {
+                slidesPerView: Math.min(4, teacherCount),
+            },
+        },
+    });
+});
+
+</script>
 </html>

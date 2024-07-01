@@ -4,11 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Course;
+use App\Models\Meeting;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\StudentWithdrawalRequest;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\Meeting;
 
 class User extends Authenticatable
 {
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'last_name',
         'contact_no',
         'is_teacher',
+        'bio'
 
     ];
 
@@ -78,6 +81,9 @@ public function bookingsAsTeacher()
     return $this->hasMany(Booking::class, 'teacher_id');
 }
 
-
+public function withdrawalRequests(): HasMany
+    {
+        return $this->hasMany(StudentWithdrawalRequest::class, 'student_id');
+    }
 
 }

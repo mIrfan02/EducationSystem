@@ -15,6 +15,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\CourseTeacherController;
+use App\Http\Controllers\StudentWithdrawalRequestController;
 
 
 // Authentication routes
@@ -115,6 +116,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/approve/teachers', [AdminController::class, 'approveTeacher'])->name('admin.approve.teacher');
     Route::post('/admin/approve/teacher/{id}', [AdminController::class, 'approveTeachers'])->name('approve.teachers');
 
+    Route::get('/admin/bookings-with-commission', [BookingController::class, 'showBookingsWithCommission'])->name('admin.bookings_with_commission');
+
+    // Route to show overview of bookings to the admin
+Route::get('/admin/overview-bookings', [BookingController::class, 'overviewBookings'])->name('admin.overview_bookings');
+Route::get('/student/withdrawal', [StudentWithdrawalRequestController::class, 'showWithdrawalRequests'])->name('student.requests');
+Route::post('/student/withdrawalpending/request/{id}', [StudentWithdrawalRequestController::class, 'student_withdraw_request'])->name('admin.student_withdraw_request');
 
 
 });
@@ -145,6 +152,12 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
     Route::get('/teacher/wallet', [WalletController::class, 'showWallet'])->name('wallet.show');
 
     Route::post('/teacher/wallet/withdraw', [WalletController::class, 'withdraw'])->name('wallet.withdraw');
+
+
+    Route::post('/teacher/reschedule/{booking}', [TeacherController::class, 'reschedule'])->name('teacher.reschedule');
+
+
+
 });
 
 
@@ -156,8 +169,16 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 
     Route::get('/student/bookings', [BookingController::class, 'showStudentBookings'])->name('student.bookings');
 
+    Route::delete('/student/bookings/{id}', [BookingController::class, 'cancelBooking'])->name('student.cancel_booking');
+
     Route::get('/student/profile', [StudentController::class, 'editProfile'])->name('student.profile.edit');
     Route::put('/student/profile', [StudentController::class, 'updateProfile'])->name('student.profile.update');
+
+
+    Route::get('/student/withdrawal-requests', [StudentWithdrawalRequestController::class, 'index'])->name('student.withdrawal_requests');
+    Route::post('/student/withdraw', [StudentWithdrawalRequestController::class, 'store'])->name('student.withdrawal_request.store');
+
+
 
 });
 

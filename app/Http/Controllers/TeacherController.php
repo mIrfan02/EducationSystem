@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Mail\TeacherCredentialsMail;
 use Illuminate\Support\Facades\Hash;
@@ -110,14 +111,15 @@ class TeacherController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'bio'=> 'nullable|string',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('teacher.profile.edit')
-                ->withErrors($validator)
-                ->withInput();
+            ->withErrors($validator)
+            ->withInput();
         }
 
         if ($request->hasFile('profile_picture')) {
@@ -129,14 +131,17 @@ class TeacherController extends Controller
 
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
+        $user->bio = $request->bio;
+
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->input('password'));
         }
 
         $user->save();
+        Alert::success('Success','Profile updated successfully.');
 
-        return redirect()->route('teacher.profile.edit')->with('success', 'Profile updated successfully.');
+        return redirect()->route('teacher.profile.edit');
     }
 
 
@@ -147,6 +152,27 @@ class TeacherController extends Controller
     }
 
 
+    public function reschedule(Request $request, Booking $booking)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'session_date' => 'required|date|after_or_equal:today',
+        ]);
 
+        // Update the booking with the new values
+        $booking->update([
+            'start_time' => $validatedData['start_time'],
+            'end_time' => $validatedData['end_time'],
+            'session_date' => $validatedData['session_date'],
+        ]);
 
+        // Redirect back with success message or handle as needed
+        Alert::success('Success','Booking rescheduled successfully.');
+        return redirect()->back();
+    }
 }
+
+
+
